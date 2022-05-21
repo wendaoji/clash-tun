@@ -1,0 +1,47 @@
+mixed-port: 7890
+allow-lan: true
+external-controller: 127.0.0.1:9090
+mode: Rule
+log-level: info
+
+dns:
+  enable: true
+  enhanced-mode: fake-ip
+  nameserver:
+    - 114.114.114.114 # 真实请求DNS，可多设置几个
+tun:
+  enable: true
+  stack: system # 或 gvisor
+  dns-hijack:
+    - 1.0.0.1:53 # 请勿更改
+
+# 请自行配置可用的proxy
+proxies:
+- name: HK
+  type: vmess
+  server: example.com
+  port: 1234
+  uuid: 2B844D51-58F9-B83B-3C52-BFA852DDC154
+  alterId: 0
+  cipher: auto
+  udp: false
+  tls: false
+
+proxy-groups:
+- name: Select
+  type: select
+  proxies:
+    - HK
+  
+# 规则可自行参考clash文档
+rules:
+- DOMAIN-SUFFIX,google.com,Select
+- DOMAIN-KEYWORD,google,Select
+- DOMAIN,google.com,Select
+- DOMAIN-SUFFIX,ad.com,REJECT
+- IP-CIDR,127.0.0.0/8,DIRECT
+- SRC-IP-CIDR,192.168.1.201/32,DIRECT
+- GEOIP,CN,DIRECT
+- DST-PORT,80,DIRECT
+- SRC-PORT,7777,DIRECT
+- MATCH,Select
