@@ -27,8 +27,18 @@ $ cd clash-tun
 ```bash
 $ sudo mkdir /srv/clash/
 $ sudo mv config.yaml Country.mmdb /srv/clash/
-$ sudo mv clash /usr/bin/
+
 ```
+~~$ sudo mv clash /usr/bin/~~
+因为
+```
+/bin/clash
+Failed to execute operation: No such file or directory
+Install successfully
+```
+不需要下载clash，只需保证centos7 服务器能上百度就行~
+最后用clash -v即可验证版本
+
 4. 开始安装
 ```bash
 $ sudo ./installer.sh install
