@@ -4,8 +4,8 @@ if [ "$#" != "1" ];then
     exit 1
 fi
 
-if [ ! -d "/sys/fs/cgroup/net_cls/bypass_proxy" ];then
+if [ ! -d "/sys/fs/cgroup/net_cls_clash/bypass_proxy" ];then
     exit 1
 fi
 
-echo $1 > /sys/fs/cgroup/net_cls/bypass_proxy/tasks
+echo $1 > /sys/fs/cgroup/net_cls_clash/bypass_proxy/tasks
