@@ -55,3 +55,31 @@ $ sudo systemctl status clash
 ```
 如果状态是active，就说明我们就已经成功设置了Clash的Tun模式，所有流量都会经过Clash，从而达到了全局代理的功能。
 
+### 系统 DNS 未被接管时
+
+部分 Clash Premium 配置会先创建名为 `master` 的网卡，再将其改名为 `utun`。
+此时 udev 收到的是 `master` 的 `add` 事件和 `utun` 的 `move` 事件。
+如果仅匹配 `utun` 的 `add` 事件，`setup-tun.sh` 就不会执行，DNS 重定向规则也不会创建。
+本项目的 udev 规则同时匹配 `add` 和 `move`，并在 `remove` 时清理规则。
+
+已安装的机器可以只更新 udev 规则，无需重新运行安装器或修改 Clash 的 `config.yaml`。
+在本项目目录下执行以下命令；重启期间代理连接会短暂中断：
+
+```bash
+sudo install -m 0644 scripts/99-clash.rules /etc/udev/rules.d/99-clash.rules
+sudo udevadm control --reload-rules
+sudo systemctl restart clash
+```
+
+如果系统使用 systemd-resolved，再清除旧 DNS 缓存：
+
+```bash
+sudo resolvectl flush-caches
+```
+
+检查规则是否生成，并验证实际访问：
+
+```bash
+sudo nft list table ip clash
+curl -I --max-time 20 https://www.google.com.hk
+```

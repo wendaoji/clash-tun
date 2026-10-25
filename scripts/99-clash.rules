@@ -1,2 +1,3 @@
-SUBSYSTEM=="net",ENV{INTERFACE}=="utun",ACTION=="add",RUN+="/usr/lib/clash/setup-tun.sh"
-SUBSYSTEM=="net",ENV{INTERFACE}=="utun",ACTION=="remove",RUN+="/usr/lib/clash/clean-tun.sh"
+# Clash may create the interface as master, then rename it to utun (move).
+SUBSYSTEM=="net", ENV{INTERFACE}=="utun", ACTION=="add|move", RUN+="/usr/lib/clash/setup-tun.sh"
+SUBSYSTEM=="net", ENV{INTERFACE}=="utun", ACTION=="remove", RUN+="/usr/lib/clash/clean-tun.sh"
